@@ -3,7 +3,7 @@ package zlib
 import (
 	"io"
 
-	"github.com/4kills/go-zlib/native"
+	"github.com/xackery/go-zlib/native"
 )
 
 const (
@@ -52,6 +52,21 @@ func NewWriterLevelDict(w io.Writer, level int, dict []byte) (*Writer, error) {
 // This function has been added mainly for completeness' sake.
 func NewWriterLevelStrategyDict(w io.Writer, level, strategy int, dict []byte) (*Writer, error) {
 	return NewWriterLevelStrategy(w, level, strategy)
+}
+
+// NewWriterRaw performs like NewWriter but you may also specify other parameters
+// w may be nil if you only plan on using WriteBuffer.
+func NewWriterRaw(w io.Writer, level, strategy, windowBits, memLevel int) (*Writer, error) {
+	if level != DefaultCompression && (level < minCompression || level > maxCompression) {
+		return nil, errInvalidLevel
+	}
+	if strategy < minStrategy || strategy > maxStrategy {
+		return nil, errInvalidStrategy
+	}
+
+	c, err := native.NewCompressorRaw(level, strategy, windowBits, memLevel)
+
+	return &Writer{w, level, strategy, c}, err
 }
 
 // NewWriterLevelStrategy performs like NewWriter but you may also specify the compression level and strategy.

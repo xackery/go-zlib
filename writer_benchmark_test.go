@@ -13,7 +13,7 @@ import (
 
 // real world data benchmarks
 
-const decompressedMcPacketsLoc = "https://raw.githubusercontent.com/4kills/zlib_benchmark/master/decompressed_mc_packets.json"
+const decompressedMcPacketsLoc = "https://raw.githubusercontent.com/xackery/zlib_benchmark/master/decompressed_mc_packets.json"
 
 var decompressedMcPackets [][]byte
 

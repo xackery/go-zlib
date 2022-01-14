@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"io"
 
-	"github.com/4kills/go-zlib/native"
+	"github.com/xackery/go-zlib/native"
 )
 
 // Reader decompresses data from an underlying io.Reader or via the ReadBuffer method, which should be preferred
@@ -87,7 +87,7 @@ func (r *Reader) Read(p []byte) (int, error) {
 	}
 	r.inBuffer.Next(processed)
 
-	if r.eof && len(out) <= len(p){
+	if r.eof && len(out) <= len(p) {
 		copy(p, out)
 		return len(out), io.EOF
 	}

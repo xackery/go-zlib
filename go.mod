@@ -1,5 +1,3 @@
-module github.com/4kills/go-zlib
+module github.com/xackery/go-zlib
 
 go 1.13
-
-replace github.com/4kills/go-zlib => ./
