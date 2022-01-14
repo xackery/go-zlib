@@ -32,12 +32,22 @@ func NewCompressor(lvl int) (*Compressor, error) {
 	return NewCompressorStrategy(lvl, int(C.Z_DEFAULT_STRATEGY))
 }
 
+func NewCompressorRaw(lvl, strat, windowBits, memLevel int) (*Compressor, error) {
+	p := newProcessor()
+
+	if ok := C.defInit2(p.s, C.int(lvl), C.Z_DEFLATED, C.int(windowBits), C.int(memLevel), C.int(strat)); ok != C.Z_OK {
+		return nil, determineError(fmt.Errorf("%s: %s", errInitialize.Error(), "compression level might be invalid"), ok)
+	}
+
+	return &Compressor{p, lvl}, nil
+}
+
 // NewCompressorStrategy returns and initializes a new Compressor with given level and strategy
 // with zlib compression stream initialized
 func NewCompressorStrategy(lvl, strat int) (*Compressor, error) {
 	p := newProcessor()
 
-	if ok := C.defInit2(p.s, C.int(lvl), C.Z_DEFLATED, C.int(defaultWindowBits), C.int(defaultMemLevel), C.int(strat)); ok != C.Z_OK {
+	if ok := C.defInit2(p.s, C.int(lvl), C.Z_DEFLATED, C.int(defaultWindowBits), C.int(6), C.int(strat)); ok != C.Z_OK {
 		return nil, determineError(fmt.Errorf("%s: %s", errInitialize.Error(), "compression level might be invalid"), ok)
 	}
 
@@ -59,7 +69,7 @@ func (c *Compressor) Close() ([]byte, error) {
 		[]byte{},
 		condition,
 		zlibProcess,
-		func() C.int {return 0},
+		func() C.int { return 0 },
 	)
 
 	ok := C.deflateEnd(c.p.s)
